@@ -19,3 +19,31 @@ clean
 -----
 
 clean up
+
+variables
+=========
+
+ARCH
+----
+
+the target architecture
+
+RELEASE
+-------
+
+the target release name
+
+WITH_SRC
+--------
+
+include src distribution
+
+WITH_PORTS
+----------
+
+include ports distribution
+
+CLEAN_DIST_FILES
+----------------
+
+delete fetched .txz files
