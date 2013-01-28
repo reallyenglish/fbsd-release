@@ -14,7 +14,7 @@ DIST_FILES?=	base.txz doc.txz games.txz kernel.txz lib32.txz
 PORTS_FILE?=	ports.txz
 SRC_FILE?=	src.txz
 
-FBSD_TAR_FILE?=	bsd-release.tbz
+FBSD_TAR_FILE?=	fbsd-release.tbz
 TMPROOT?=	tmproot
 
 all:	${DIST_FILES} ${FBSD_TAR_FILE}
