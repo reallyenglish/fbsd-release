@@ -85,6 +85,22 @@ device created by the following command.
     md0
     # make WITH_MEMORY_DISK=/dev/md0
 
+EXAMPLES
+========
+
+create a memory disk, use it for temporaly directory to extract distributions
+and clean.
+
+    # mdconfig -a -t malloc -s 2G
+    md0
+    # make WITH_MEMORY_DISK=/dev/md0
+    # make clean WITH_MEMORY_DISK=/dev/md0
+    # mdconfig -d -u 0
+
+use distribution files on local disk
+
+    # make DIST_PROTO=file DIST_PATH=../../../tmp/distfiles
+
 SEE ALSO
 ========
 
