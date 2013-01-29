@@ -36,6 +36,30 @@ RELEASE
 
 the target release name
 
+DIST_PROTO
+----------
+
+one of ftp, http, https and file (ftp). if DIST_PROTO is "file", DIST_HOST is
+ignored.
+
+DIST_HOST
+---------
+
+the host name of distfile server ("ftp.jp.freebsd.org")
+
+DIST_PATH
+---------
+
+the path to the directory where all distribution files are located at
+("pub/FreeBSD/releases/${ARCH}/${RELEASE}")
+
+DIST_FILES
+----------
+
+a list of distribution files ("base.txz doc.txz games.txz kernel.txz
+lib32.txz")
+
+
 WITH_SRC
 --------
 

@@ -44,8 +44,14 @@ ${TMPROOT}:
 
 
 ${DIST_FILES}:
-# TODO support file://
+.if ${DIST_PROTO} == "file"
+	cp ${DIST_PATH}/${.TARGET} .
+.elif ${DIST_PROTO} == "ftp" || ${DIST_PROTO} == "http" || ${DIST_PROTO} == "https"
 	fetch ${DIST_PROTO}://${DIST_HOST}/${DIST_PATH}/${.TARGET}
+.else
+	echo "unsupported DIST_PROTO, ${DIST_PROTO}. use either file, ftp or http"
+	exit 1
+.endif
 
 clean:
 .if defined(WITH_MEMORY_DISK)
