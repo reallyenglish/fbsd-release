@@ -10,7 +10,10 @@ RELEASE?=	9.1-RELEASE
 DIST_PROTO?=	ftp
 DIST_HOST?=	ftp.jp.freebsd.org
 DIST_PATH?=	pub/FreeBSD/releases/${ARCH}/${RELEASE}
-DIST_FILES?=	base.txz doc.txz games.txz kernel.txz lib32.txz
+DIST_FILES?=	base.txz doc.txz games.txz kernel.txz
+.if ${ARCH} == "amd64"
+DIST_FILES+=	lib32.txz
+.endif
 PORTS_FILE?=	ports.txz
 SRC_FILE?=	src.txz
 
