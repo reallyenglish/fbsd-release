@@ -37,14 +37,23 @@ ${FBSD_TAR_FILE}: ${TMPROOT}
 
 ${TMPROOT}:
 	mkdir -p ${TMPROOT}
+.if defined(WITH_MEMORY_DISK)
+	newfs ${WITH_MEMORY_DISK}
+	mount -o async,noatime ${WITH_MEMORY_DISK} ${TMPROOT}
+.endif
+
 
 ${DIST_FILES}:
 # TODO support file://
 	fetch ${DIST_PROTO}://${DIST_HOST}/${DIST_PATH}/${.TARGET}
 
 clean:
+.if defined(WITH_MEMORY_DISK)
+	umount ${WITH_MEMORY_DISK}
+.endif
+	find tmproot -flags schg -exec chflags noschg {} \;
+	rm -rf ${TMPROOT}
 .if defined(CLEAN_DIST_FILES)
 	rm -f ${DIST_FILES}
 .endif
-	rm -rf ${TMPROOT}
 	rm -f ${FBSD_TAR_FILE}
