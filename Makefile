@@ -17,7 +17,7 @@ SRC_FILE?=	src.txz
 FBSD_TAR_FILE?=	fbsd-release.tbz
 TMPROOT?=	tmproot
 
-all:	${DIST_FILES} ${FBSD_TAR_FILE}
+all:	${DIST_FILES} ${FBSD_TAR_FILE} patch
 
 ${FBSD_TAR_FILE}: ${TMPROOT}
 
@@ -34,6 +34,10 @@ ${FBSD_TAR_FILE}: ${TMPROOT}
 .endif
 
 	tar -cpjf ${.TARGET} -C ${TMPROOT} .
+
+# TODO bsdiff support
+patch:
+	# NOOP
 
 ${TMPROOT}:
 	mkdir -p ${TMPROOT}
