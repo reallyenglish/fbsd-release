@@ -7,6 +7,7 @@
 
 ARCH?=	amd64
 RELEASE?=	9.1-RELEASE
+DIST_DIR?=	distfiles/${ARCH}
 DIST_PROTO?=	ftp
 DIST_HOST?=	ftp.jp.freebsd.org
 DIST_PATH?=	pub/FreeBSD/releases/${ARCH}/${RELEASE}
@@ -17,7 +18,7 @@ DIST_FILES+=	lib32.txz
 PORTS_FILE?=	ports.txz
 SRC_FILE?=	src.txz
 
-FBSD_TAR_FILE?=	fbsd-release.tbz
+FBSD_TAR_FILE?=	${ARCH}-fbsd-release.tbz
 TMPROOT?=	tmproot
 
 all:	${DIST_FILES} ${FBSD_TAR_FILE} patch
@@ -25,15 +26,15 @@ all:	${DIST_FILES} ${FBSD_TAR_FILE} patch
 ${FBSD_TAR_FILE}: ${TMPROOT}
 
 .for F in ${DIST_FILES}
-	tar -xp -C ${TMPROOT} -f ${F}
+	tar -xp -C ${TMPROOT} -f ${DIST_DIR}/${F}
 .endfor
 
 .if defined(WITH_SRC)
-	tar -xp -C ${TMPROOT} -f ${SRC_FILE}
+	tar -xp -C ${TMPROOT} -f ${DIST_DIR}/${SRC_FILE}
 .endif
 
 .if defined(WITH_PORTS)
-	tar -xp -C ${TMPROOT} -f ${PORTS_FILE} --exclude .svn
+	tar -xp -C ${TMPROOT} -f ${DIST_DIR}/${PORTS_FILE} --exclude .svn
 .endif
 
 	tar -cpjf ${.TARGET} -C ${TMPROOT} .
@@ -42,31 +43,28 @@ ${FBSD_TAR_FILE}: ${TMPROOT}
 patch:
 	# NOOP
 
-${TMPROOT}:
+${TMPROOT}!
 	mkdir -p ${TMPROOT}
-.if defined(WITH_MEMORY_DISK)
-	newfs ${WITH_MEMORY_DISK}
-	mount -o async,noatime ${WITH_MEMORY_DISK} ${TMPROOT}
-.endif
+	umount `realpath tmproot` || true
+	mount -t tmpfs tmpfs ${TMPROOT}
 
+${DIST_DIR}:
+	mkdir -p ${DIST_DIR}
 
-${DIST_FILES}:
+${DIST_FILES}:	${DIST_DIR}
 .if ${DIST_PROTO} == "file"
-	cp ${DIST_PATH}/${.TARGET} .
+	cp ${DIST_PATH}/${.TARGET} ${DIST_DIR}/
 .elif ${DIST_PROTO} == "ftp" || ${DIST_PROTO} == "http" || ${DIST_PROTO} == "https"
-	fetch ${DIST_PROTO}://${DIST_HOST}/${DIST_PATH}/${.TARGET}
+	fetch -m -o ${DIST_DIR} ${DIST_PROTO}://${DIST_HOST}/${DIST_PATH}/${.TARGET}
 .else
 	echo "unsupported DIST_PROTO, ${DIST_PROTO}. use either file, ftp or http"
 	exit 1
 .endif
 
 clean:
-.if defined(WITH_MEMORY_DISK)
-	umount ${WITH_MEMORY_DISK}
-.endif
-	find tmproot -flags schg -exec chflags noschg {} \;
-	rm -rf ${TMPROOT}
+	umount `realpath ${TMPROOT}`
+
 .if defined(CLEAN_DIST_FILES)
-	rm -f ${DIST_FILES}
+	rm -f ${DIST_DIR}/${DIST_FILES}
 .endif
 	rm -f ${FBSD_TAR_FILE}

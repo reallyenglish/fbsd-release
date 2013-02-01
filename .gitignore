@@ -1,3 +1,5 @@
 *.txz
 *.tbz
-tmproot
+*.swp
+/tmproot/
+/distfiles/

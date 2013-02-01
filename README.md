@@ -13,15 +13,12 @@ target
 all
 ---
 
-create fbsd-release.tbz
+create ${ARCH}-fbsd-release.tbz for $ARCH
 
 clean
 -----
 
-clean up. note that memory device used by WITH_MEMORY_DISK (see below) is not
-destroyed. you must destroy it manually.
-
-    # mdconfig -d -u ${ID)
+clean up
 
 variables
 =========
@@ -56,8 +53,8 @@ the path to the directory where all distribution files are located at
 DIST_FILES
 ----------
 
-a list of distribution files ("base.txz doc.txz games.txz kernel.txz
-lib32.txz")
+a list of distribution files ("base.txz doc.txz games.txz kernel.txz" and
+lib32.txz if ARCH=amd64)
 
 
 WITH_SRC
@@ -75,33 +72,14 @@ CLEAN_DIST_FILES
 
 delete fetched .txz files
 
-WITH_MEMORY_DISK
-----------------
-
-use memory disk when extracting distributions. the value is the path to memory
-device created by the following command.
-
-    # mdconfig -a -t malloc -s 2G
-    md0
-    # make WITH_MEMORY_DISK=/dev/md0
-
 EXAMPLES
 ========
 
-create a memory disk, use it for temporaly directory to extract distributions
-and clean.
+in most cases, all you need is:
 
-    # mdconfig -a -t malloc -s 2G
-    md0
-    # make WITH_MEMORY_DISK=/dev/md0
-    # make clean WITH_MEMORY_DISK=/dev/md0
-    # mdconfig -d -u 0
+    # make all ARCH=i386
 
 use distribution files on local disk
 
     # make DIST_PROTO=file DIST_PATH=../../../tmp/distfiles
 
-SEE ALSO
-========
-
-    mdconfig(8)
