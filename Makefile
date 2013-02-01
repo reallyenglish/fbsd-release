@@ -62,7 +62,7 @@ ${DIST_FILES}:	${DIST_DIR}
 .endif
 
 clean:
-	umount `realpath ${TMPROOT}`
+	umount `realpath ${TMPROOT}` || true
 
 .if defined(CLEAN_DIST_FILES)
 	rm -f ${DIST_DIR}/${DIST_FILES}
